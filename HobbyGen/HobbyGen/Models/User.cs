@@ -1,4 +1,4 @@
-﻿namespace HobbyGen.Models
+namespace HobbyGen.Models
 {
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
@@ -17,7 +17,8 @@
         /// <summary>
         /// Gets the hobbies that a user has
         /// </summary>
-        public ICollection<Hobby> Hobbies { get; set; }
+        // use virtual for lazy loading
+        public virtual ICollection<Hobby> Hobbies { get; set; }
 
         /// <summary>
         /// Gets the name of the user
@@ -27,13 +28,16 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="User"/> class
         /// </summary>
-        protected User(){ }
+        protected User()
+        {
+            this.Hobbies = new HashSet<Hobby>();
+        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="User"/> class
         /// </summary>
         /// <param name="name">The name of the user</param>
-        public User(string name)
+        public User(string name) : this()
         {
             this.Hobbies = new HashSet<Hobby>();
             this.Name = name;

@@ -1,7 +1,6 @@
-﻿namespace HobbyGen.Controllers
+namespace HobbyGen.Controllers
 {
     using HobbyGen.Persistance;
-    using HobbyGen.Persistance.Interfaces;
     using Microsoft.AspNetCore.Mvc;
 
     /// <summary>

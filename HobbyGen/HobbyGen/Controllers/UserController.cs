@@ -1,4 +1,4 @@
-﻿namespace HobbyGen.Controllers
+namespace HobbyGen.Controllers
 {
     using System.Collections.Generic;
     using System.Linq;
@@ -25,32 +25,31 @@
         [HttpGet("id/{id}")]
         public User GetById(uint id)
         {
-            return this.DataContext.UserItems.Find(id);
+            return this.DataContext.UserItems
+                .FirstOrDefault(u => u.Id == id);
         }
 
         // GET api/user/hendrik
         [HttpGet("name/{name}")]
         public IEnumerable<User> GetByName(string name)
         {
-            var all = this.Get().ToList();
+            var all = this.DataContext.UserItems;
 
             // Get results where name is similar (contains or contains)
-            var users = this.Get().Where(
-                u => u.Name.ToLower().Contains(name) 
-                || name.Contains(u.Name.ToLower()));
+            var users = all.Where(
 
-            // Sort list
-            users.ToList().Sort(
-                Comparer<User>.Create(
-                    (k1, k2) => k1.Name.CompareTo(name))
-                );
-            //var ordered = users.OrderBy(u => u.Name).ToList();
-            return users;
+                u => u.Name.ToLower().Contains(name.ToLower())
+                || name.ToLower().Contains(u.Name.ToLower()));
+
+            // Order list (alt. Comparer to name)
+            var ulist = users.OrderBy(u => u.Name);
+
+            return ulist;
         }
 
         // POST api/user
         [HttpPost]
-        public void Post([FromForm]string name, [FromForm]IEnumerable<string> hobbies)
+        public User Post([FromForm]string name, [FromForm]IEnumerable<string> hobbies)
         {
             // Create the user
             User user = new User(name);
@@ -67,6 +66,8 @@
 
             this.DataContext.UserItems.Add(user);
             this.DataContext.SaveChanges();
+
+            return user;
         }
 
         // PUT api/user/5
@@ -89,6 +90,15 @@
                 user.Hobbies.Remove(this.FindOrCreateHobby(hobby));
             }
 
+            // TODO: use batches
+            //var batches = CardRepository.splitList(xx, 100);
+            //batches.ForEach(x =>
+            //{
+            //    context.xx.AddRange(x);
+            //    context.SaveChanges();
+            //});
+
+
             this.DataContext.SaveChanges();
         }
 
@@ -101,7 +111,7 @@
         }
 
         /// <summary>
-        /// Finds or creates a hobby if none are found. Does not save the hobby if one is created.
+        /// Finds or creates a hobby if none are found.
         /// <para />
         /// TODO: move to manager
         /// </summary>
@@ -109,7 +119,7 @@
         /// <returns>A hobby</returns>
         private Hobby FindOrCreateHobby(string name)
         {
-            var hobby = this.DataContext.HobbyItems.Find(name.ToLower());
+            var hobby = this.DataContext.HobbyItems.FirstOrDefault(h => h.Name == name.ToLower());
             if (hobby == null)
             {
                 hobby = new Hobby(name);
