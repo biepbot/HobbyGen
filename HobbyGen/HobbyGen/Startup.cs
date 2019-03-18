@@ -41,8 +41,7 @@
             services.AddDbContext<GeneralContext>(
                 opt =>
                 opt
-                .UseInMemoryDatabase("Hobby")
-                );
+                .UseInMemoryDatabase(Guid.NewGuid().ToString()));
         }
 
         /// <summary>
