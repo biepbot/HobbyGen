@@ -46,7 +46,6 @@
 
                     // insert hobby into database?
                     dbhobbies.Add(dbh);
-                    this.DataContext.Save();
                 }
 
                 // add hobby to user
