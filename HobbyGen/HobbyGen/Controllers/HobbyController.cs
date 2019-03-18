@@ -1,44 +1,64 @@
 ﻿namespace HobbyGen.Controllers
 {
     using System.Collections.Generic;
+    using HobbyGen.Models;
+    using HobbyGen.Persistance;
     using Microsoft.AspNetCore.Mvc;
 
     /// <summary>
-    /// Default
+    /// 
     /// </summary>
     [Route("api/[controller]")]
-    public class HobbyController : Controller
+    public class HobbyController : DatabaseController
     {
-        // GET api/values
+        public HobbyController(GeneralContext context) : base(context) { }
+
+        // GET api/hobby
         [HttpGet]
-        public IEnumerable<string> Get()
+        public IEnumerable<Hobby> Get()
         {
-            return new string[] { "value1", "value2" };
+            return this.DataContext.HobbyItems;
         }
 
-        // GET api/values/5
+        // GET api/hobby/Schaatsen
         [HttpGet("{id}")]
-        public string Get(int id)
+        public Hobby Get(string id)
         {
-            return "value";
+            return this.DataContext.HobbyItems.Find(id);
         }
 
-        // POST api/values
+        // POST api/hobby?name=Schaatsen
         [HttpPost]
-        public void Post([FromBody]string value)
+        public void Post([FromQuery]string name)
         {
+            var match = this.Get(name);
+            if (match == null) // Hobby doesn't exist!
+            {
+                // add new hobby
+                this.DataContext.HobbyItems.Add(new Hobby(name));
+                this.DataContext.Save();
+            }
+            else // Hobby exists!
+            {
+                // 409 - Conflict
+                this.StatusCode(409);
+            }
         }
 
-        // PUT api/values/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody]string value)
-        {
-        }
-
-        // DELETE api/values/5
+        // DELETE api/hobby/Schaatsen
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public void Delete(string id)
         {
+            // TODO: Only allow if there's no users bound to this one, else admin only
+            // currently always allows
+
+            var match = this.Get(id);
+            if (match != null) // Hobby exists!
+            {
+                // Delete the hobby
+                this.DataContext.HobbyItems.Remove(match);
+                this.DataContext.Save();
+            }
         }
     }
 }
