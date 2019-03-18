@@ -4,6 +4,7 @@
     using Microsoft.EntityFrameworkCore;
     using HobbyGen.Models;
     using HobbyGen.Persistance.Interfaces;
+    using System.Linq;
 
     /// <summary>
     /// Class to manage a general database context
@@ -31,9 +32,10 @@
         public DbSet<Hobby> HobbyItems { get; set; }
 
         /// <inheritdoc/>
-        public int Save()
+        public override int SaveChanges()
         {
-            return this.SaveChanges();
+            // MINOR TODO: Implement cascade when needed
+            return base.SaveChanges();
         }
     }
 }

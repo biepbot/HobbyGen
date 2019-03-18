@@ -17,11 +17,5 @@
         /// Gets or sets the hobby items attached to the database context
         /// </summary>
         DbSet<Hobby> HobbyItems { get; set; }
-
-        /// <summary>
-        /// Saves all changes made to the database
-        /// </summary>
-        /// <returns>An integer with changes made</returns>
-        int Save();
     }
 }

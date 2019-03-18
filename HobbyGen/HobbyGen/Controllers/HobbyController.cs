@@ -7,7 +7,7 @@
     using Microsoft.AspNetCore.Mvc;
 
     /// <summary>
-    /// 
+    /// WebAPI for communicating with hobby services
     /// </summary>
     [Route("api/[controller]")]
     public class HobbyController : DatabaseController
@@ -39,7 +39,7 @@
             {
                 // add new hobby
                 this.DataContext.HobbyItems.Add(new Hobby(name));
-                this.DataContext.Save();
+                this.DataContext.SaveChanges();
             }
             else // Hobby exists!
             {
@@ -61,7 +61,7 @@
             {
                 // Delete the hobby
                 this.DataContext.HobbyItems.Remove(match);
-                this.DataContext.Save();
+                this.DataContext.SaveChanges();
             }
         }
     }

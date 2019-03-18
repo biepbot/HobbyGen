@@ -17,12 +17,12 @@
         /// <summary>
         /// Gets the hobbies that a user has
         /// </summary>
-        public HashSet<Hobby> Hobbies { get; }
+        public ICollection<Hobby> Hobbies { get; set; }
 
         /// <summary>
         /// Gets the name of the user
         /// </summary>
-        public string Name { get; }
+        public string Name { get; set; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="User"/> class

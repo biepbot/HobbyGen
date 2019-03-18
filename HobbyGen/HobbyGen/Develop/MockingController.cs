@@ -17,7 +17,7 @@
             {
                 this.CreateUser("Barry Boomsma", new string[] { "Wandelen", "Schaatsen" });
                 this.CreateUser("Hendrik Jansen", new string[] { "Koken", "Wandelen" });
-                this.DataContext.Save();
+                this.DataContext.SaveChanges();
             }
         }
 
@@ -54,7 +54,7 @@
 
             // Add user to database
             this.DataContext.UserItems.Add(u);
-            this.DataContext.Save();
+            this.DataContext.SaveChanges();
         }
     }
 }

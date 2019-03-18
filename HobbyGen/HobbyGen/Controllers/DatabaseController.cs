@@ -12,7 +12,7 @@
         /// <summary>
         /// The database context to use
         /// </summary>
-        protected IHobbyContext DataContext { get; }
+        protected GeneralContext DataContext { get; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DatabaseController"/> class

@@ -1,5 +1,6 @@
 ﻿namespace HobbyGen.Models
 {
+    using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
 
     /// <summary>
@@ -25,6 +26,20 @@
         public Hobby(string name)
         {
             this.Name = name.ToLower();
+        }
+
+        /// <inheritdoc/>
+        public override bool Equals(object obj)
+        {
+            var hobby = obj as Hobby;
+            return hobby != null &&
+                   Name == hobby.Name;
+        }
+
+        /// <inheritdoc/>
+        public override int GetHashCode()
+        {
+            return 539060726 + EqualityComparer<string>.Default.GetHashCode(Name);
         }
     }
 }
