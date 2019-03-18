@@ -3,6 +3,7 @@
     using System.Collections.Generic;
     using HobbyGen.Models;
     using HobbyGen.Persistance;
+    using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
 
     /// <summary>
@@ -24,12 +25,14 @@
         [HttpGet("{id}")]
         public Hobby Get(string id)
         {
-            return this.DataContext.HobbyItems.Find(id);
+            return this.DataContext.HobbyItems.Find(id.ToLower());
         }
 
         // POST api/hobby?name=Schaatsen
         [HttpPost]
-        public void Post([FromQuery]string name)
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status409Conflict)]
+        public IActionResult Post([FromQuery]string name)
         {
             var match = this.Get(name);
             if (match == null) // Hobby doesn't exist!
@@ -41,8 +44,9 @@
             else // Hobby exists!
             {
                 // 409 - Conflict
-                this.StatusCode(409);
+                return this.StatusCode(409);
             }
+            return this.Ok();
         }
 
         // DELETE api/hobby/Schaatsen

@@ -35,11 +35,13 @@
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
+
+            // TODO: Move this memory db to testing later
+            // eg https://docs.microsoft.com/en-us/ef/core/miscellaneous/testing/in-memory
             services.AddDbContext<GeneralContext>(
                 opt =>
                 opt
-                .UseInMemoryDatabase("UserItems")
-                .UseInMemoryDatabase("HobbyItems")
+                .UseInMemoryDatabase("Hobby")
                 );
         }
 
