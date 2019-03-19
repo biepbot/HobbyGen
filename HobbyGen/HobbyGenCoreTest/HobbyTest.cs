@@ -1,12 +1,8 @@
 ﻿namespace HobbyGenCoreTest
 {
     using System.Linq;
-    using HobbyGen.Controllers.Extensions;
     using HobbyGen.Controllers.Managers;
-    using HobbyGen.Models;
-    using HobbyGen.Persistance;
     using HobbyGenCoreTest.Base;
-    using Microsoft.EntityFrameworkCore;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 
     /// <summary>
