@@ -43,6 +43,25 @@ namespace HobbyGenCoreTest
             context.Dispose();
         }
 
+        /// <summary>
+        /// Tests whether users are equal to each other by using Equals()
+        /// </summary>
+        [TestMethod]
+        public void UserEqualsTest()
+        {
+            var u1 = new User("Bob Bobbington");
+            u1.Hobbies.Add(new Hobby("Bobbing"));
+            u1.Hobbies.Add(new Hobby("Bobbo"));
+            u1.Hobbies.Add(new Hobby("Archery"));
+
+            var u2 = new User("Bob Bobbington");
+            u2.Hobbies.Add(new Hobby("Bobbing"));
+            u2.Hobbies.Add(new Hobby("Bobbo"));
+            u2.Hobbies.Add(new Hobby("Archery"));
+
+            Assert.AreEqual(u1, u2, "Equals check did not pass");
+        }
+
         [TestMethod]
         public void CreateUserTest()
         {
@@ -76,6 +95,9 @@ namespace HobbyGenCoreTest
             // Check if hobbies match
             Assert.AreEqual(this.user.Hobbies, dbUser.Hobbies,
                 "Hobbies are not the same");
+
+            // Check if users can be matched through a Equals check
+            Assert.AreEqual(this.user, dbUser);
         }
 
         [TestMethod]
@@ -88,17 +110,8 @@ namespace HobbyGenCoreTest
 
             var dbUser = this.uManager.GetByName(this.user.Name).FirstOrDefault();
 
-            // Check if names match
-            Assert.AreEqual(this.user.Name, dbUser.Name,
-                "Saved user has different name");
-
-            // Check if hobbies count match
-            Assert.IsTrue(this.user.Hobbies.Count == dbUser.Hobbies.Count,
-                "Database user has a different amount of hobbies");
-
-            // Check if hobbies match
-            Assert.AreEqual(this.user.Hobbies, dbUser.Hobbies,
-                "Hobbies are not the same");
+            // Check if users match
+            Assert.AreEqual(this.user, dbUser);
         }
     }
 }

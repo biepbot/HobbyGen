@@ -1,5 +1,6 @@
 namespace HobbyGen.Models
 {
+    using HobbyGen.Controllers.Extensions;
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
 
@@ -40,6 +41,32 @@ namespace HobbyGen.Models
         public User(string name) : this()
         {
             this.Name = name;
+        }
+
+        /// <inheritdoc/>
+        public override bool Equals(object obj)
+        {
+            var user = obj as User;
+
+            if (user == null)
+            {
+                return false;
+            }
+
+            return user != null &&
+                   Id == user.Id &&
+                   this.Hobbies.ScrambledEquals(user.Hobbies) &&
+                   Name == user.Name;
+        }
+
+        /// <inheritdoc/>
+        public override int GetHashCode()
+        {
+            var hashCode = 444648493;
+            hashCode = hashCode * -1521134295 + Id.GetHashCode();
+            hashCode = hashCode * -1521134295 + EqualityComparer<ICollection<Hobby>>.Default.GetHashCode(Hobbies);
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Name);
+            return hashCode;
         }
     }
 }
