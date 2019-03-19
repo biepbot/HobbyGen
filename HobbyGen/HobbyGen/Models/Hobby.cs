@@ -1,5 +1,6 @@
 ﻿namespace HobbyGen.Models
 {
+    using Newtonsoft.Json;
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
 
@@ -8,10 +9,13 @@
     /// </summary>
     public class Hobby
     {
+        [Key]
+        [JsonIgnore]
+        public uint Id { get; set; }
+
         /// <summary>
         /// Gets or sets the name of a hobby
         /// </summary>
-        [Key]
         public string Name { get; set; }
 
         /// <summary>

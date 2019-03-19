@@ -39,7 +39,6 @@ namespace HobbyGen.Models
         /// <param name="name">The name of the user</param>
         public User(string name) : this()
         {
-            this.Hobbies = new HashSet<Hobby>();
             this.Name = name;
         }
     }
