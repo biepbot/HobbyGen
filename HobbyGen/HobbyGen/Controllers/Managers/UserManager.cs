@@ -81,7 +81,7 @@
             {
                 // Get hobby
                 var h = this.FindOrCreateHobby(hobby);
-                user.Hobbies.Add(h);
+                user.Hobbies.Add(hobby);
             }
 
             this.context.UserItems.Add(user);
@@ -142,15 +142,17 @@
         /// </summary>
         /// <param name="name">The name of the hobby to find or create</param>
         /// <returns>A hobby</returns>
-        private Hobby FindOrCreateHobby(string name)
+        private string FindOrCreateHobby(string name)
         {
             var hobby = this.context.HobbyItems.FirstOrDefault(h => h.Name == name.ToLower());
             if (hobby == null)
             {
                 hobby = new Hobby(name);
+                this.context.HobbyItems.Add(hobby);
+                this.context.SaveChanges();
             }
 
-            return hobby;
+            return name;
         }
     }
 }

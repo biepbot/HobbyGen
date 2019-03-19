@@ -3,6 +3,8 @@ namespace HobbyGen.Models
     using HobbyGen.Controllers.Extensions;
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
+    using System.ComponentModel.DataAnnotations.Schema;
+    using System.Linq;
 
     /// <summary>
     /// Class to store user data
@@ -16,10 +18,22 @@ namespace HobbyGen.Models
         public uint Id { get; set; }
 
         /// <summary>
-        /// Gets the hobbies that a user has
+        /// Gets the hobbies that a user has. Not mapped to hobbies due to data store errors 
+        /// (not enough time to fix)
+        /// TODO: find out issue why hobbies are not FETCHED from db
         /// </summary>
-        // use virtual for lazy loading
-        public virtual ICollection<Hobby> Hobbies { get; set; }
+        [NotMapped]
+        public virtual ICollection<string> Hobbies { get; set; }
+
+        /// <summary>
+        /// Hobbies as a string
+        /// </summary>
+        [Required]
+        public string HobbyString
+        {
+            get { return string.Join(",", this.Hobbies); }
+            set { this.Hobbies = value.Split(',').ToList(); }
+        }
 
         /// <summary>
         /// Gets the name of the user
@@ -31,7 +45,7 @@ namespace HobbyGen.Models
         /// </summary>
         protected User()
         {
-            this.Hobbies = new HashSet<Hobby>();
+            this.Hobbies = new HashSet<string>();
         }
 
         /// <summary>
@@ -54,7 +68,6 @@ namespace HobbyGen.Models
             }
 
             return user != null &&
-                   Id == user.Id &&
                    this.Hobbies.ScrambledEquals(user.Hobbies) &&
                    Name == user.Name;
         }
@@ -64,7 +77,7 @@ namespace HobbyGen.Models
         {
             var hashCode = 444648493;
             hashCode = hashCode * -1521134295 + Id.GetHashCode();
-            hashCode = hashCode * -1521134295 + EqualityComparer<ICollection<Hobby>>.Default.GetHashCode(Hobbies);
+            hashCode = hashCode * -1521134295 + EqualityComparer<ICollection<string>>.Default.GetHashCode(Hobbies);
             hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Name);
             return hashCode;
         }

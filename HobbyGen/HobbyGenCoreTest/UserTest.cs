@@ -1,7 +1,7 @@
 namespace HobbyGenCoreTest
 {
-    using System;
     using System.Linq;
+    using HobbyGen.Controllers.Extensions;
     using HobbyGen.Controllers.Managers;
     using HobbyGen.Models;
     using HobbyGen.Persistance;
@@ -22,18 +22,11 @@ namespace HobbyGenCoreTest
         public void OnInitialize()
         {
             this.user = new User("Bob Bobbington");
-            this.user.Hobbies.Add(new Hobby("Bobbing"));
-            this.user.Hobbies.Add(new Hobby("Bobbo"));
-            this.user.Hobbies.Add(new Hobby("Archery"));
+            this.user.Hobbies.Add("Bobbing");
+            this.user.Hobbies.Add("Bobbo");
+            this.user.Hobbies.Add("Archery");
 
-            var options = new DbContextOptionsBuilder<GeneralContext>()
-                .UseInMemoryDatabase("HobbyTest")
-                .EnableSensitiveDataLogging()
-                .Options;
-
-            // Create mem database
-            this.context = new GeneralContext(options);
-            this.uManager = new UserManager(this.context);
+            this.ResetContext();
         }
 
         [TestCleanup]
@@ -50,14 +43,14 @@ namespace HobbyGenCoreTest
         public void UserEqualsTest()
         {
             var u1 = new User("Bob Bobbington");
-            u1.Hobbies.Add(new Hobby("Bobbing"));
-            u1.Hobbies.Add(new Hobby("Bobbo"));
-            u1.Hobbies.Add(new Hobby("Archery"));
+            u1.Hobbies.Add("Bobbing");
+            u1.Hobbies.Add("Bobbo");
+            u1.Hobbies.Add("Archery");
 
             var u2 = new User("Bob Bobbington");
-            u2.Hobbies.Add(new Hobby("Bobbing"));
-            u2.Hobbies.Add(new Hobby("Bobbo"));
-            u2.Hobbies.Add(new Hobby("Archery"));
+            u2.Hobbies.Add("Bobbing");
+            u2.Hobbies.Add("Bobbo");
+            u2.Hobbies.Add("Archery");
 
             Assert.AreEqual(u1, u2, "Equals check did not pass");
         }
@@ -71,8 +64,14 @@ namespace HobbyGenCoreTest
             // Save to db
             context.SaveChanges();
 
+            // Check if these hobbies are also present in the database
+            //
+            //
+            //
+            //
+
             // Let's switch to a different data context
-            this.OnInitialize();
+            this.ResetContext();
 
             // Check if added
             Assert.IsTrue(context.UserItems.Count() == 1,
@@ -93,11 +92,11 @@ namespace HobbyGenCoreTest
                 "User has no hobbies");
 
             // Check if hobbies match
-            Assert.AreEqual(this.user.Hobbies, dbUser.Hobbies,
+            Assert.IsTrue(this.user.Hobbies.ScrambledEquals(dbUser.Hobbies),
                 "Hobbies are not the same");
 
             // Check if users can be matched through a Equals check
-            Assert.AreEqual(this.user, dbUser);
+            Assert.AreEqual(this.user, dbUser, "Users are different");
         }
 
         [TestMethod]
@@ -106,12 +105,78 @@ namespace HobbyGenCoreTest
             this.CreateUserTest();
 
             // Let's switch to a different data context
-            this.OnInitialize();
+            this.ResetContext();
 
             var dbUser = this.uManager.GetByName(this.user.Name).FirstOrDefault();
 
             // Check if users match
-            Assert.AreEqual(this.user, dbUser);
+            Assert.AreEqual(this.user, dbUser, "Users are different");
+        }
+
+        [TestMethod]
+        public void UpdateUserTest()
+        {
+            this.CreateUserTest();
+
+            // Let's switch to a different data context
+            this.ResetContext();
+
+            var dbUser = this.uManager.GetByName(this.user.Name).FirstOrDefault();
+
+            // Check if users match
+            Assert.AreEqual(this.user, dbUser, "Users are different");
+
+            // Update user with a new hobby
+            // Bob now likes swimming!
+            this.uManager.UpdateUser(dbUser.Id, new string[] {"Swimming"}, new string[] {});
+            this.ResetContext();
+
+            var dbUser2 = this.uManager.GetById(dbUser.Id);
+
+            // Bob should now like swimming
+            Assert.IsTrue(dbUser2.Hobbies.Contains("Swimming"));
+
+            // Check if swimming is also present in the database
+            //
+            //
+            //
+            //
+
+            // Bob decides to hate swimming :(
+            this.uManager.UpdateUser(dbUser.Id, new string[] {}, new string[] { "Swimming" });
+            this.ResetContext();
+
+            var dbUser3 = this.uManager.GetById(dbUser.Id);
+
+            // Bob should now no longer like swimming
+            Assert.IsFalse(dbUser3.Hobbies.Contains("Swimming"));
+
+            // Bob now likes swimming again - it was in error all along! He hates Archery now though.
+            this.uManager.UpdateUser(dbUser.Id, new string[] { "Swimming" }, new string[] { "Archery" });
+            this.ResetContext();
+
+            var dbUser4 = this.uManager.GetById(dbUser.Id);
+
+            Assert.IsTrue(dbUser4.Hobbies.Contains("Swimming"));
+            Assert.IsFalse(dbUser4.Hobbies.Contains("Archery"));
+
+        }
+
+        /// <summary>
+        /// Resets the database context
+        /// </summary>
+        private void ResetContext()
+        {
+            var options = new DbContextOptionsBuilder<GeneralContext>()
+                .UseInMemoryDatabase("HobbyTest")
+                .EnableSensitiveDataLogging()
+                .Options;
+
+#pragma warning disable CS0618 // Type or member is obsolete
+            // Create mem database
+            this.context = new GeneralContext(options);
+            this.uManager = new UserManager(this.context);
+#pragma warning restore CS0618 // Type or member is obsolete
         }
     }
 }
