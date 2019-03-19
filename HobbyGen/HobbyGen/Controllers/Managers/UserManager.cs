@@ -58,20 +58,22 @@
         /// <summary>
         /// Retrieves a list of users based on the hobby
         /// </summary>
-        /// <param name="hobby">The hobby to search for</param>
+        /// <param name="hobbies">The hobby to search for</param>
         /// <returns>A list of users</returns>
-        public IEnumerable<User> SearchByHobby(IEnumerable<string> hobby)
+        public IEnumerable<User> SearchByHobby(IEnumerable<string> hobbies)
         {
             var all = this.context.UserItems;
 
-            // FUTURE:
             // order by matches (max offset of 1)
-
             // Get results where name is similar (contains or contains)
-            var users = all.Where(u => u.Hobbies.Intersect(hobby).Any());
+            var users = all.Where(delegate (User u)
+            {
+                var matches = hobbies.Intersect(u.Hobbies).Count();
+                return matches >= hobbies.Count() - 1 && matches > 0;
+            });
 
-            // Order list (alt. Comparer to name)
-            var ulist = users.OrderBy(u => u.Name);
+            // Order list by match amount
+            var ulist = users.OrderByDescending(u => hobbies.Intersect(u.Hobbies).Count());
 
             return ulist;
         }
@@ -177,6 +179,7 @@
         {
             var user = this.GetById(id);
             this.context.UserItems.Remove(user);
+            this.context.SaveChanges();
         }
     }
 }
