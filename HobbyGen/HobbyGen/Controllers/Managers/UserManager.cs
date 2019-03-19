@@ -11,6 +11,7 @@
     public class UserManager
     {
         private GeneralContext context;
+        private HobbyManager hManager;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="UserManager"/> class
@@ -19,6 +20,18 @@
         public UserManager(GeneralContext context)
         {
             this.context = context;
+            this.hManager = new HobbyManager(context, this);
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="UserManager"/> class
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="hManager">The hobby manager to user</param>
+        public UserManager(GeneralContext context, HobbyManager hManager)
+        {
+            this.context = context;
+            this.hManager = hManager;
         }
 
         /// <summary>
@@ -26,7 +39,7 @@
         /// </summary>
         /// <param name="name">The name of the user to find</param>
         /// <returns>A list of users</returns>
-        public IEnumerable<User> GetByName(string name)
+        public IEnumerable<User> SearchByName(string name)
         {
             var all = this.context.UserItems;
 
@@ -35,6 +48,27 @@
 
                 u => u.Name.ToLower().Contains(name.ToLower())
                 || name.ToLower().Contains(u.Name.ToLower()));
+
+            // Order list (alt. Comparer to name)
+            var ulist = users.OrderBy(u => u.Name);
+
+            return ulist;
+        }
+
+        /// <summary>
+        /// Retrieves a list of users based on the hobby
+        /// </summary>
+        /// <param name="hobby">The hobby to search for</param>
+        /// <returns>A list of users</returns>
+        public IEnumerable<User> SearchByHobby(IEnumerable<string> hobby)
+        {
+            var all = this.context.UserItems;
+
+            // FUTURE:
+            // order by matches (max offset of 1)
+
+            // Get results where name is similar (contains or contains)
+            var users = all.Where(u => u.Hobbies.Intersect(hobby).Any());
 
             // Order list (alt. Comparer to name)
             var ulist = users.OrderBy(u => u.Name);
@@ -79,8 +113,7 @@
 
             foreach (string hobby in hobbies)
             {
-                // Get hobby
-                var h = this.FindOrCreateHobby(hobby);
+                var h = this.hManager.FindOrCreateHobby(hobby);
                 user.Hobbies.Add(hobby);
             }
 
@@ -88,6 +121,16 @@
             this.context.SaveChanges();
 
             return user;
+        }
+
+        /// <summary>
+        /// Creates a user from the user object
+        /// </summary>
+        /// <param name="user">The user to create</param>
+        /// <returns>The accepted user</returns>
+        public User CreateUser(User user)
+        {
+            return this.CreateUser(user.Name, user.Hobbies);
         }
 
         /// <summary>
@@ -105,13 +148,13 @@
             hobbiesAdded = hobbiesAdded.Distinct();
             foreach (string hobby in hobbiesAdded)
             {
-                user.Hobbies.Add(this.FindOrCreateHobby(hobby));
+                user.Hobbies.Add(this.hManager.FindOrCreateHobby(hobby));
             }
 
             // Remove hobbies
             foreach (string hobby in hobbiesRemoved)
             {
-                user.Hobbies.Remove(this.FindOrCreateHobby(hobby));
+                user.Hobbies.Remove(this.hManager.FindOrCreateHobby(hobby));
             }
 
             // TODO: use batches
@@ -122,7 +165,7 @@
             //    context.SaveChanges();
             //});
 
-
+            this.context.Update(user);
             this.context.SaveChanges();
         }
 
@@ -134,25 +177,6 @@
         {
             var user = this.GetById(id);
             this.context.UserItems.Remove(user);
-        }
-
-        /// <summary>
-        /// Finds or creates a hobby if none are found.
-        /// <para />
-        /// </summary>
-        /// <param name="name">The name of the hobby to find or create</param>
-        /// <returns>A hobby</returns>
-        private string FindOrCreateHobby(string name)
-        {
-            var hobby = this.context.HobbyItems.FirstOrDefault(h => h.Name == name.ToLower());
-            if (hobby == null)
-            {
-                hobby = new Hobby(name);
-                this.context.HobbyItems.Add(hobby);
-                this.context.SaveChanges();
-            }
-
-            return name;
         }
     }
 }

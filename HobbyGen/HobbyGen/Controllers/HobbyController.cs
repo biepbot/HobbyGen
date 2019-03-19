@@ -28,7 +28,7 @@
         // GET api/hobby/Schaatsen
         [HttpGet("{id}")]
         public Hobby Get(string id) 
-            => this.hManager.GetById(id);
+            => this.hManager.GetByName(id);
 
         // POST api/hobby?name=Schaatsen
         [HttpPost]

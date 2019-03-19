@@ -32,7 +32,7 @@ namespace HobbyGen.Controllers
         // GET api/user/hendrik
         [HttpGet("name/{name}")]
         public IEnumerable<User> GetByName(string name) 
-            => this.uManager.GetByName(name);
+            => this.uManager.SearchByName(name);
 
         // POST api/user
         [HttpPost]
