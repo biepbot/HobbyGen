@@ -4,23 +4,21 @@ namespace HobbyGenCoreTest
     using HobbyGen.Controllers.Extensions;
     using HobbyGen.Controllers.Managers;
     using HobbyGen.Models;
-    using HobbyGen.Persistance;
-    using Microsoft.EntityFrameworkCore;
+    using HobbyGenCoreTest.Base;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 
     /// <summary>
     /// Test class for testing user persistence
     /// </summary>
     [TestClass]
-    public class UserTest
+    public class UserTest : DatabaseTest
     {
         private User user;
         private UserManager uManager;
         private HobbyManager hManager;
-        private GeneralContext context;
 
         [TestInitialize]
-        public void OnInitialize()
+        public override void OnInitialize()
         {
             // Create a user
             this.user = new User("Bob Bobbington");
@@ -28,17 +26,7 @@ namespace HobbyGenCoreTest
             this.user.Hobbies.Add("Bobbo");
             this.user.Hobbies.Add("Archery");
 
-            this.ResetContext();
-        }
-
-        [TestCleanup]
-        public void OnCleanup()
-        {
-            // Clear the database
-            this.context.Database.EnsureDeleted();
-
-            // Throw away the database context
-            context.Dispose();
+            base.OnInitialize();
         }
 
         /// <summary>
@@ -311,19 +299,11 @@ namespace HobbyGenCoreTest
         /// <summary>
         /// Resets the database context
         /// </summary>
-        private void ResetContext()
+        protected override void ResetContext()
         {
-            var options = new DbContextOptionsBuilder<GeneralContext>()
-                .UseInMemoryDatabase("HobbyTest")
-                .EnableSensitiveDataLogging()
-                .Options;
-
-#pragma warning disable CS0618 // Type or member is obsolete
-            // Create mem database
-            this.context = new GeneralContext(options);
+            base.ResetContext();
             this.uManager = new UserManager(this.context);
             this.hManager = new HobbyManager(this.context);
-#pragma warning restore CS0618 // Type or member is obsolete
         }
     }
 }
