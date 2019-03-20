@@ -10,11 +10,21 @@
 <head>
     <meta charset="utf-8" />
     <title>Hobbygen!</title>
+
+    <link rel="stylesheet" href="~/css/main.css" />
 </head>
 <body>
-    <button id="btn-get-all-users">Get all users</button>
-    <button id="btn-get-user">Search user</button>
-    <div id="result"></div>
+    <div class="header">
+        <button id="btn-get-all-users">Get all users</button>
+        <input id="search-query" type="text" placeholder="Search by name..." />
+        <button id="btn-get-user">Search user</button>
+    </div>
+    <div id="result">
+        <div>
+            <h2>No users shown!</h2>
+            <p>Either search for users of get all users.</p>
+        </div>
+    </div>
     <script src="~/js/api.js" async type="text/javascript"></script>
 </body>
 </html>

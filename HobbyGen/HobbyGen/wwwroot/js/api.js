@@ -32,26 +32,33 @@
 		// Get element
 		var element = document.getElementById(id);
 
-		// Fill in url with data from data, if data is present
-		if (data != null) {
-			// Loop through properties of data
-			for (var property in data) {
-				if (object.hasOwnProperty(property)) {
-					// find property in upper casing in data
-					var upperProp = property.toUpperCase();
-					var value = data[property];
-
-					// replace all in url
-					url = url.replaceAll("$(" + upperProp + ")", value);
-				}
-			}
-		}
-		
-		// transform url to prevent XSS and injection
-		url = encodeURIComponent(url);
-
 		// Attach anon function to button
 		addEvent("click", element, function () {
+			var tdata = data;
+			var turl = url;
+
+			// Fill in url with data from data, if data is present
+			if (tdata != null) {
+				// is data a function?
+				if (typeof data === "function") {
+					tdata = data();
+				}
+
+				// Loop through properties of data
+				for (var property in tdata) {
+					if (tdata.hasOwnProperty(property)) {
+						// find property in upper casing in data
+						var upperProp = property.toUpperCase();
+						var value = tdata[property];
+
+						// replace all in url
+						turl = url.replace("\$\(" + upperProp + "\)", value);
+					}
+				}
+			}
+
+			// transform url to prevent XSS and injection
+			turl = encodeURIComponent(turl);
 			// Call callback with data (from url, if present)
 			var xhr = new XMLHttpRequest();
 			xhr.onreadystatechange = function () {
@@ -63,7 +70,7 @@
 					}
 				}
 			};
-			xhr.open(type, url, true);
+			xhr.open(type, turl, true);
 			xhr.send();
 		});
 	}
@@ -112,7 +119,10 @@
 	 * returns string
 	*/
 	function getSearchQuery() {
-		return "";
+		// get element with query
+		var element = document.getElementById("search-query");
+
+		return { name: element.value };
 	}
 
 	/*
@@ -134,8 +144,3 @@
 		}
 	}
 })();
-
-String.prototype.replaceAll = function (search, replacement) {
-	var target = this;
-	return target.replace(new RegExp(search, 'g'), replacement);
-};

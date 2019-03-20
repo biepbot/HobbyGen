@@ -1,0 +1,66 @@
+﻿body {
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    font-size: 14px;
+    line-height: 1.42857143;
+    color: #333;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+}
+
+html {
+    font-family: sans-serif;
+    -webkit-text-size-adjust: 100%;
+    -ms-text-size-adjust: 100%;
+}
+
+body {
+    background: #FAFAFA;
+}
+
+/*
+    Search bar header content
+*/
+.header {
+    text-align: right;
+    padding: 15px;
+    background: #fff;
+    box-shadow: 0 2px 2px 0 rgba(0,0,0,0.16), 0 0 0 1px rgba(0,0,0,0.08);
+}
+
+/*
+    Result content
+*/
+#result {
+    text-align: center;
+}
+
+    #result > div {
+        text-align: left;
+        background: #fff;
+        display: inline-block;
+        width: 300px;
+        margin: 10px;
+        border-radius: 2px;
+        box-shadow: 0 2px 2px 0 rgba(0,0,0,0.16), 0 0 0 1px rgba(0,0,0,0.08);
+    }
+
+        #result > div > h2 {
+            font-size: 30px;
+        }
+
+        #result > div > h2,
+        #result > div > p {
+            margin: 0;
+            padding: 10px;
+            border-bottom: solid 1px #ebebeb;
+            color: rgba(0,0,0,.87);
+            line-height: 1.2;
+            padding: 12px 15px;
+        }
+
+        #result > div > ul{
+            display: block;
+            max-height: 300px;
+            overflow: auto;
+        }

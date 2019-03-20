@@ -35,7 +35,7 @@
                 myname += FNamePart1.Random();
 
                 // maybe select a second part
-                if (r.NextDouble() >= 0.5)
+                if (r.NextDouble() >= 0.10)
                 {
                     myname += FNamePart2.Random();
                 }
