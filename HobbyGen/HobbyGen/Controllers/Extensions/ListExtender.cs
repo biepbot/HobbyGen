@@ -1,5 +1,6 @@
 ﻿namespace HobbyGen.Controllers.Extensions
 {
+    using System;
     using System.Collections.Generic;
     using System.Linq;
 
@@ -20,6 +21,18 @@
             var deletedItems = t.Except(o).Any();
             var newItems = o.Except(t).Any();
             return !newItems && !deletedItems;
+        }
+
+        /// <summary>
+        /// Selects a random entry from a list
+        /// </summary>
+        /// <typeparam name="T">The type of entry</typeparam>
+        /// <param name="enumerable">The list</param>
+        /// <returns>A random entry</returns>
+        public static T Random<T>(this IEnumerable<T> enumerable)
+        {
+            int index = new Random().Next(0, enumerable.Count());
+            return enumerable.ElementAt(index);
         }
     }
 }

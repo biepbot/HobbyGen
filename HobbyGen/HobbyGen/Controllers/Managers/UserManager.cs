@@ -2,6 +2,7 @@
 {
     using HobbyGen.Models;
     using HobbyGen.Persistance;
+    using System;
     using System.Collections.Generic;
     using System.Linq;
 
@@ -79,6 +80,14 @@
         }
 
         /// <summary>
+        /// Saves all changes made
+        /// </summary>
+        public void SaveChanges()
+        {
+            this.context.SaveChanges();
+        }
+
+        /// <summary>
         /// Gets all users
         /// </summary>
         /// <returns>A list with all the users</returns>
@@ -107,6 +116,17 @@
         /// <returns>The user created</returns>
         public User CreateUser(string name, IEnumerable<string> hobbies)
         {
+            return this.CreateUser(name, hobbies, true);
+        }
+
+        /// <summary>
+        /// See <see cref="CreateUser(string, IEnumerable{string})"/>. Allows to prevent saving (for mass insertion)
+        /// </summary>
+        /// <param name="name">THe name of the user</param>
+        /// <param name="hobbies">The user's hobbies</param>
+        /// <param name="save">Whether it saves its changes immediately after</param>
+        public User CreateUser(string name, IEnumerable<string> hobbies, bool save)
+        {
             // Create the user
             User user = new User(name);
 
@@ -115,12 +135,16 @@
 
             foreach (string hobby in hobbies)
             {
-                var h = this.hManager.FindOrCreateHobby(hobby);
+                var h = this.hManager.FindOrCreateHobby(hobby, save);
                 user.Hobbies.Add(hobby);
             }
 
             this.context.UserItems.Add(user);
-            this.context.SaveChanges();
+
+            if (save)
+            {
+                this.context.SaveChanges();
+            }
 
             return user;
         }

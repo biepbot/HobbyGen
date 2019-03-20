@@ -55,15 +55,20 @@
         /// Creates a hobby by its name
         /// </summary>
         /// <param name="name">The name of the hobby</param>
+        /// <param name="save">Whether to persist immediately</param>
         /// <returns>Status code</returns>
-        public int CreateHobby(string name)
+        public int CreateHobby(string name, bool save = true)
         {
             var match = this.GetByName(name);
             if (match == null) // Hobby doesn't exist!
             {
                 // add new hobby
                 this.context.HobbyItems.Add(new Hobby(name));
-                this.context.SaveChanges();
+
+                if (save)
+                {
+                    this.context.SaveChanges();
+                }
             }
             else // Hobby exists!
             {
@@ -111,13 +116,14 @@
         /// <para />
         /// </summary>
         /// <param name="name">The name of the hobby to find or create</param>
+        /// <param name="save">Whether to persist immediately</param>
         /// <returns>A hobby</returns>
-        public string FindOrCreateHobby(string name)
+        public string FindOrCreateHobby(string name, bool save = true)
         {
             var hobby = this.GetByName(name);
             if (hobby == null)
             {
-                this.CreateHobby(name);
+                this.CreateHobby(name, save);
             }
 
             return name;

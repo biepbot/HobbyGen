@@ -1,6 +1,7 @@
 namespace HobbyGen.Models
 {
     using HobbyGen.Controllers.Extensions;
+    using Newtonsoft.Json;
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
@@ -29,6 +30,7 @@ namespace HobbyGen.Models
         /// Hobbies as a string
         /// </summary>
         [Required]
+        [JsonIgnore]
         public string HobbyString
         {
             get { return string.Join(",", this.Hobbies); }

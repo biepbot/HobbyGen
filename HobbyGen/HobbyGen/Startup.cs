@@ -1,5 +1,7 @@
 ﻿namespace HobbyGen
 {
+    using HobbyGen.Controllers;
+    using HobbyGen.Controllers.Managers;
     using HobbyGen.Persistance;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
@@ -13,6 +15,8 @@
     /// </summary>
     public class Startup
     {
+        private const string DB_LOC = "hobby";
+
         /// <summary>
         /// Initializes a new instance of the <see cref="Startup"/> class
         /// </summary>
@@ -37,12 +41,16 @@
             // Support Razor pages
             services.AddMvc();
 
+            // Add singleton for dummy data
+            services.AddSingleton<DummyController, DummyController>();
+
             // TODO: Move this memory db to testing later
             // eg https://docs.microsoft.com/en-us/ef/core/miscellaneous/testing/in-memory
             services.AddDbContext<GeneralContext>(
                 opt =>
                 opt
-                .UseInMemoryDatabase("Hobby"));
+                .UseInMemoryDatabase(DB_LOC));
+
         }
 
         /// <summary>
