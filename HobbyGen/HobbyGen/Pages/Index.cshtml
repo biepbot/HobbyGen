@@ -1,0 +1,20 @@
+﻿@page
+@{
+    Layout = null;
+}
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>Hobbygen!</title>
+</head>
+<body>
+    <button id="btn-get-all-users">Get all users</button>
+    <button id="btn-get-user">Search user</button>
+    <div id="result"></div>
+    <script src="~/js/api.js" async type="text/javascript"></script>
+</body>
+</html>

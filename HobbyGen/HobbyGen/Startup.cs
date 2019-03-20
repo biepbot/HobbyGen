@@ -34,6 +34,7 @@
         /// <param name="services"></param>
         public void ConfigureServices(IServiceCollection services)
         {
+            // Support Razor pages
             services.AddMvc();
 
             // TODO: Move this memory db to testing later
@@ -56,7 +57,11 @@
                 app.UseDeveloperExceptionPage();
             }
 
+            // Enable razor pages
             app.UseMvc();
+
+            // For the wwwroot folder
+            app.UseStaticFiles(); 
         }
     }
 }
