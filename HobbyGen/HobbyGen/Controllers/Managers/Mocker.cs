@@ -54,7 +54,7 @@
                 // GENERATE ALL THE HOBBIES
                 for (int i = 0; i < hobbiesamnt; i++)
                 {
-                    hobbies[i] = GenerateHobby(10, r);
+                    hobbies[i] = GenerateHobby(3, r);
                 }
 
                 // Create the users

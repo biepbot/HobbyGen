@@ -21,18 +21,23 @@ namespace HobbyGen.Controllers
 
         // GET api/user
         [HttpGet]
-        public IEnumerable<User> Get() 
+        public IEnumerable<User> Get()
             => this.uManager.GetAll();
 
         // GET api/user/5
         [HttpGet("id/{id}")]
-        public User GetById(uint id) 
+        public User GetById(uint id)
             => this.uManager.GetById(id);
 
         // GET api/user/hendrik
         [HttpGet("name/{name}")]
-        public IEnumerable<User> GetByName(string name) 
+        public IEnumerable<User> GetByName(string name)
             => this.uManager.SearchByName(name);
+
+        // GET api/user
+        [HttpPost("hobby")]
+        public IEnumerable<User> GetByHobby([FromBody]string[] hobbies)
+            => this.uManager.SearchByHobby(hobbies);
 
         // POST api/user
         [HttpPost]
@@ -41,12 +46,12 @@ namespace HobbyGen.Controllers
 
         // PUT api/user/5
         [HttpPut("{id}")]
-        public void Put(uint id, [FromBody]IEnumerable<string> hobbiesAdded, [FromBody]IEnumerable<string> hobbiesRemoved)
+        public void Put(uint id, [FromForm]IEnumerable<string> hobbiesAdded, [FromForm]IEnumerable<string> hobbiesRemoved)
             => this.uManager.UpdateUser(id, hobbiesAdded, hobbiesRemoved);
 
         // DELETE api/user/5
         [HttpDelete("{id}")]
-        public void Delete(uint id) 
+        public void Delete(uint id)
             => this.uManager.DeleteUser(id);
     }
 }

@@ -8,7 +8,9 @@
 	// Search user by hobbies
 	attach("btn-get-all-users", "api/user", "GET", null, showUsers);
 	attach("btn-get-user", "api/user/name/$(NAME)", "GET", getSearchQuery, showUsers);
+	attach("btn-get-userhobby", "api/user/hobby", "POST", getSearchQueryHobby, showUsers);
 
+	// TODO
 	// UPDATES (dynamically)
 	// Attach buttons to
 	// Delete user
@@ -71,7 +73,8 @@
 				}
 			};
 			xhr.open(type, turl, true);
-			xhr.send();
+			xhr.setRequestHeader("Content-Type", "application/json; charset=utf-8");
+			xhr.send(JSON.stringify(tdata));
 		});
 	}
 
@@ -123,6 +126,18 @@
 		var element = document.getElementById("search-query");
 
 		return { name: element.value };
+	}
+
+	/*
+	 * Gets the filled in value for the search query for hobbies
+	 * 
+	 * returns array of hobbies
+	*/
+	function getSearchQueryHobby() {
+		// get element with query
+		var element = document.getElementById("search-queryhobby");
+
+		return element.value.split(", ");
 	}
 
 	/*

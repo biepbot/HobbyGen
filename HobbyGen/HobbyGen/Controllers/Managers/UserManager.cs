@@ -63,6 +63,11 @@
         /// <returns>A list of users</returns>
         public IEnumerable<User> SearchByHobby(IEnumerable<string> hobbies)
         {
+            if (hobbies == null)
+            {
+                return new User[0];
+            }
+
             var all = this.context.UserItems;
 
             // order by matches (max offset of 1)
