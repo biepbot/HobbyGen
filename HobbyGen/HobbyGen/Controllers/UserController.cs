@@ -46,8 +46,8 @@ namespace HobbyGen.Controllers
 
         // PUT api/user/5
         [HttpPut("{id}")]
-        public void Put(uint id, [FromForm]IEnumerable<string> hobbiesAdded, [FromForm]IEnumerable<string> hobbiesRemoved)
-            => this.uManager.UpdateUser(id, hobbiesAdded, hobbiesRemoved);
+        public User Put(uint id, [FromBody]HobbyDelta delta)
+            => this.uManager.UpdateUser(id, delta.HobbiesAdded, delta.HobbiesRemoved);
 
         // DELETE api/user/5
         [HttpDelete("{id}")]

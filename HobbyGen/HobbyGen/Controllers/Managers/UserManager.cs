@@ -173,16 +173,25 @@
         /// <param name="id">The id of the user to update</param>
         /// <param name="hobbiesAdded">The hobbies added</param>
         /// <param name="hobbiesRemoved">The hobbies removed</param>
-        public void UpdateUser(uint id, IEnumerable<string> hobbiesAdded, IEnumerable<string> hobbiesRemoved)
+        public User UpdateUser(uint id, IEnumerable<string> hobbiesAdded, IEnumerable<string> hobbiesRemoved)
         {
             var user = this.GetById(id);
 
             // Add hobbies
             // Duplicates not allowed
             hobbiesAdded = hobbiesAdded.Distinct();
+            hobbiesRemoved = hobbiesRemoved.Distinct();
+
             foreach (string hobby in hobbiesAdded)
             {
-                user.Hobbies.Add(this.hManager.FindOrCreateHobby(hobby));
+                if (!string.IsNullOrWhiteSpace(hobby))
+                {
+                    var h = this.hManager.FindOrCreateHobby(hobby);
+                    if (!user.Hobbies.Contains(h))
+                    {
+                        user.Hobbies.Add(h);
+                    }
+                }
             }
 
             // Remove hobbies
@@ -201,6 +210,8 @@
 
             this.context.Update(user);
             this.context.SaveChanges();
+
+            return user;
         }
 
         /// <summary>

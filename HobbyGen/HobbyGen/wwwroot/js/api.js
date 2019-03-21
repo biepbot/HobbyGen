@@ -66,9 +66,9 @@
 			var xhr = new XMLHttpRequest();
 			xhr.onreadystatechange = function () {
 				if (this.readyState === 4 && this.status === 200) {
-					// send JSON data
-					var json = JSON.parse(this.responseText);
 					if (callback) {
+						// send JSON data
+						var json = JSON.parse(this.responseText);
 						callback(json);
 					}
 				}
@@ -102,6 +102,18 @@
 			var head = document.createElement("h2");
 			var body = document.createElement("ul");
 
+			// Add div input
+			var howrapper = document.createElement("div");
+			var hobadd = document.createElement("input");
+			hobadd.type = "text";
+			hobadd.placeholder = "add hobby...";
+			var hobutton = document.createElement("button");
+			hobutton.innerHTML = "Add hobby";
+
+			howrapper.appendChild(hobadd);
+			hobutton.id = user.id + "-hobby-add";
+			howrapper.appendChild(hobutton);
+
 			head.innerHTML = user.name;
 
 			while (user.hobbies.length) {
@@ -113,8 +125,16 @@
 
 			wrapperDiv.id = user.id;
 			wrapperDiv.appendChild(head);
+			wrapperDiv.appendChild(howrapper);
 			wrapperDiv.appendChild(body);
 			resultEle.appendChild(wrapperDiv);
+
+			attach(hobutton.id, "api/user/" + user.id, "PUT", function () {
+				return {
+					hobbiesAdded: hobadd.value.split(", "),
+					hobbiesRemoved: []
+				};
+			}, showAddedUser);
 		}
 	}
 
