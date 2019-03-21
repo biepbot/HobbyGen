@@ -11,6 +11,19 @@
 	attach("btn-get-userhobby", "api/user/hobby", "POST", getSearchQueryHobby, showUsers);
 	attach("btn-add-user", "api/user", "POST", getUserQuery, showAddedUser);
 
+	// Fetch dummy data
+	attach("btn-fetch-dummy-data", "api/dummy", "POST", null, function () {
+		showMessage("Dummy data fetched!", "Hit get users to see a massive list");
+		var e = document.getElementById("btn-fetch-dummy-data");
+		e.innerHTML = "Dummy data loaded!";
+	});
+	addEvent("click", document.getElementById("btn-fetch-dummy-data"), function () {
+		// disable self
+		var e = document.getElementById("btn-fetch-dummy-data");
+		e.innerHTML = "Loading dummy data..."
+		e.disabled = true;
+	});
+
 	showEmpty();
 	//
 	// FUNCTIONS
@@ -253,14 +266,23 @@
 	 * returns nothing
 	*/ 
 	function showEmpty() {
+		showMessage("No users shown!", "Either search for users of get all users.");
+	}
+
+	/*
+	 * Shows a message in the results bar
+	 * 
+	 * returns nothing
+	*/
+	function showMessage(h2, p) {
 		var resultEle = document.getElementById("result");
 
 		// Create structure
 		var wrapperDiv = document.createElement("div");
 		var head = document.createElement("h2");
-		head.innerHTML = "No users shown!";
+		head.innerHTML = h2;
 		var text = document.createElement("p");
-		text.innerHTML = "Either search for users of get all users.";
+		text.innerHTML = p;
 
 		wrapperDiv.appendChild(head);
 		wrapperDiv.appendChild(text);
