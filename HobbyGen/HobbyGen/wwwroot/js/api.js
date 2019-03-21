@@ -11,13 +11,7 @@
 	attach("btn-get-userhobby", "api/user/hobby", "POST", getSearchQueryHobby, showUsers);
 	attach("btn-add-user", "api/user", "POST", getUserQuery, showAddedUser);
 
-	// TODO
-	// UPDATES (dynamically)
-	// Attach buttons to
-	// Delete user
-	// Delete hobby
-	// Update user
-
+	showEmpty();
 	//
 	// FUNCTIONS
 	//
@@ -67,8 +61,11 @@
 			xhr.onreadystatechange = function () {
 				if (this.readyState === 4 && this.status === 200) {
 					if (callback) {
-						// send JSON data
-						var json = JSON.parse(this.responseText);
+						var json;
+						// send JSON data, if any
+						if (this.responseText != "") {
+							json = JSON.parse(this.responseText);
+						}
 						callback(json);
 					}
 				}
@@ -88,21 +85,36 @@
 		// Get body to insert results into
 		var resultEle = document.getElementById("result");
 
-		// Delete all children
-		while (resultEle.hasChildNodes()) {
-			resultEle.removeChild(resultEle.lastChild);
+		clearResults();
+
+		if (users.length == 0) {
+			showEmpty();
+		} else {
+			// Loop through every user
+			while (users.length) {
+				var user = users.pop();
+
+				// Call function to remove scoping
+				appendUser(user);
+			}
 		}
 
-		// Loop through every user
-		while (users.length) {
-			var user = users.pop();
-
+		// Append a user to the result bar
+		function appendUser(user) {
 			// Create structure
 			var wrapperDiv = document.createElement("div");
 			var head = document.createElement("h2");
 			var body = document.createElement("ul");
 
-			// Add div input
+			// Add button to remove users
+			var deluser = document.createElement("button");
+			deluser.innerHTML = "Delete user";
+			deluser.id = user.id + "-del-user";
+
+			// Add hr
+			var hr = document.createElement("hr");
+
+			// Add input for adding hobbies
 			var howrapper = document.createElement("div");
 			var hobadd = document.createElement("input");
 			hobadd.type = "text";
@@ -114,27 +126,62 @@
 			hobutton.id = user.id + "-hobby-add";
 			howrapper.appendChild(hobutton);
 
+			// Add input to remove hobbies
+			var how2rapper = document.createElement("div");
+			var hobrem = document.createElement("input");
+			hobrem.type = "text";
+			hobrem.placeholder = "remove hobby...";
+			var ho2button = document.createElement("button");
+			ho2button.innerHTML = "Remove hobby";
+
+			how2rapper.appendChild(hobrem);
+			ho2button.id = user.id + "-hobby-rem";
+			how2rapper.appendChild(ho2button);
+
+			// Append and create hobbies
 			head.innerHTML = user.name;
 
 			while (user.hobbies.length) {
 				var hobby = user.hobbies.pop();
-				var tail = document.createElement("li");
-				tail.innerHTML = hobby;
-				body.appendChild(tail);
+				if (hobby != "") {
+					var tail = document.createElement("li");
+					tail.innerHTML = hobby;
+					body.appendChild(tail);
+				}
 			}
-
-			wrapperDiv.id = user.id;
+			
 			wrapperDiv.appendChild(head);
+			wrapperDiv.appendChild(deluser);
+
+			wrapperDiv.appendChild(hr);
+
 			wrapperDiv.appendChild(howrapper);
+			wrapperDiv.appendChild(how2rapper);
 			wrapperDiv.appendChild(body);
 			resultEle.appendChild(wrapperDiv);
 
+			// Attach listeners
+			// Allow for hobby creation
 			attach(hobutton.id, "api/user/" + user.id, "PUT", function () {
 				return {
 					hobbiesAdded: hobadd.value.split(", "),
 					hobbiesRemoved: []
 				};
 			}, showAddedUser);
+
+			// Allow for hobby deletion
+			attach(ho2button.id, "api/user/" + user.id, "PUT", function () {
+				return {
+					hobbiesAdded: [],
+					hobbiesRemoved: hobrem.value.split(", ")
+				};
+			}, showAddedUser);
+
+			// Allow for user deletion
+			attach(deluser.id, "api/user/" + user.id, "DELETE", null, function () {
+				clearResults();
+				showEmpty();
+			});
 		}
 	}
 
@@ -184,6 +231,40 @@
 		var element = document.getElementById("search-queryhobby");
 
 		return element.value.split(", ");
+	}
+
+	/*
+	 * Clears all results
+	 * 
+	 * returns nothing
+	*/ 
+	function clearResults() {
+		var resultEle = document.getElementById("result");
+
+		// Delete all children
+		while (resultEle.hasChildNodes()) {
+			resultEle.removeChild(resultEle.lastChild);
+		}
+	}
+
+	/*
+	 * Sets the results bar to empty and shows the user to interact
+	 * 
+	 * returns nothing
+	*/ 
+	function showEmpty() {
+		var resultEle = document.getElementById("result");
+
+		// Create structure
+		var wrapperDiv = document.createElement("div");
+		var head = document.createElement("h2");
+		head.innerHTML = "No users shown!";
+		var text = document.createElement("p");
+		text.innerHTML = "Either search for users of get all users.";
+
+		wrapperDiv.appendChild(head);
+		wrapperDiv.appendChild(text);
+		resultEle.appendChild(wrapperDiv);
 	}
 
 	/*
