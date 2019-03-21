@@ -9,6 +9,7 @@
 	attach("btn-get-all-users", "api/user", "GET", null, showUsers);
 	attach("btn-get-user", "api/user/name/$(NAME)", "GET", getSearchQuery, showUsers);
 	attach("btn-get-userhobby", "api/user/hobby", "POST", getSearchQueryHobby, showUsers);
+	attach("btn-add-user", "api/user", "POST", getUserQuery, showAddedUser);
 
 	// TODO
 	// UPDATES (dynamically)
@@ -110,10 +111,20 @@
 				body.appendChild(tail);
 			}
 
+			wrapperDiv.id = user.id;
 			wrapperDiv.appendChild(head);
 			wrapperDiv.appendChild(body);
 			resultEle.appendChild(wrapperDiv);
 		}
+	}
+
+	/*
+	 * Shows feedback of added user
+	 * 
+	 * returns nothing
+	*/ 
+	function showAddedUser(user) {
+		showUsers([user]);
 	}
 
 	/*
@@ -126,6 +137,21 @@
 		var element = document.getElementById("search-query");
 
 		return { name: element.value };
+	}
+
+	/*
+	 * Gets the filled in value for the user query
+	 * 
+	 * returns string
+	*/
+	function getUserQuery() {
+		// get element with query
+		var element = document.getElementById("user-query");
+
+		return {
+			name: element.value,
+			hobbies: []
+		};
 	}
 
 	/*

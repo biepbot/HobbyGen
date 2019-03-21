@@ -41,8 +41,8 @@ namespace HobbyGen.Controllers
 
         // POST api/user
         [HttpPost]
-        public User Post([FromForm]string name, [FromForm]IEnumerable<string> hobbies)
-            => this.uManager.CreateUser(name, hobbies);
+        public User Post([FromBody]User u)
+            => this.uManager.CreateUser(u);
 
         // PUT api/user/5
         [HttpPut("{id}")]

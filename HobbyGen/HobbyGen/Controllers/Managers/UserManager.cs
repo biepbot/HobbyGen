@@ -135,13 +135,16 @@
             // Create the user
             User user = new User(name);
 
-            // Duplicates not allowed
-            hobbies = hobbies.Distinct();
-
-            foreach (string hobby in hobbies)
+            if (hobbies != null)
             {
-                var h = this.hManager.FindOrCreateHobby(hobby, save);
-                user.Hobbies.Add(hobby);
+                // Duplicates not allowed
+                hobbies = hobbies.Distinct();
+
+                foreach (string hobby in hobbies)
+                {
+                    var h = this.hManager.FindOrCreateHobby(hobby, save);
+                    user.Hobbies.Add(hobby);
+                }
             }
 
             this.context.UserItems.Add(user);
